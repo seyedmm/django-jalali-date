@@ -2,10 +2,14 @@
 
 [![PyPi Version](https://img.shields.io/pypi/v/django-jalali-date.svg)](https://pypi.python.org/pypi/django-jalali-date)
 [![PyPI - Downloads](https://img.shields.io/pypi/dm/django-jalali-date.svg)](https://pypistats.org/packages/django-jalali-date)
+[![Github Tests](https://github.com/a-roomana/django-jalali-date/workflows/Test/badge.svg)](https://github.com/a-roomana/django-jalali-date/actions)
 [![GitHub stars](https://img.shields.io/github/stars/a-roomana/django-jalali-date.svg?style=social)](https://github.com/a-roomana/django-jalali-date)
+
+[![Python Version](https://img.shields.io/pypi/pyversions/django-jalali-date.svg)](https://pypi.python.org/pypi/django-jalali-date)
+
 # django-jalali-date
 
-Jalali Date support for user interface. Easy conversion of DateTimeFiled to JalaliDateTimeField within the admin site, view and templates.
+Jalali Date support for user interface. Easy conversion of DateTimeField to JalaliDateTimeField within the admin site, view and templates.
 
 
 ## Dependency
@@ -54,6 +58,8 @@ INSTALLED_APPS = [
 
 # default settings (optional)
 JALALI_DATE_DEFAULTS = {
+   # if change it to true then all dates of the list_display will convert to the Jalali.
+   'LIST_DISPLAY_AUTO_CONVERT': False,
    'Strftime': {
         'date': '%y/%m/%d',
         'datetime': '%H:%M:%S _ %y/%m/%d',
@@ -164,8 +170,8 @@ class MyInlines2(StackedInlineJalaliMixin, admin.StackedInline):
 	
 @admin.register(FirstModel)
 class FirstModelAdmin(ModelAdminJalaliMixin, admin.ModelAdmin):
-	# show jalali date in list display 
-	list_display = ['some_fields', 'get_created_jalali']
+	#for showing the Jalali date on the list_display, please change the LIST_DISPLAY_AUTO_CONVERT to true or create custom methods. for example:
+    list_display = ['some_fields', 'get_created_jalali']
 	
 	inlines = (MyInlines1, MyInlines2, )
 	raw_id_fields = ('some_fields', )
@@ -179,4 +185,5 @@ class FirstModelAdmin(ModelAdminJalaliMixin, admin.ModelAdmin):
 	def get_created_jalali(self, obj):
 		return datetime2jalali(obj.created).strftime('%a, %d %b %Y %H:%M:%S')
 ```
+![list-display](https://bayanbox.ir/view/6588806159227221741/Screenshot-from-2023-12-29-11-42-24.png)
 ![example-admin](http://bayanbox.ir/view/2877111068605695571/Screenshot-from-2016-07-26-01-37-07.png)

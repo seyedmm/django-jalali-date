@@ -5,6 +5,7 @@ from django import get_version
 from django.conf import settings
 
 from jalali_date import date2jalali, datetime2jalali
+from jalali_date.utils import normalize_strftime
 
 django_version = get_version()
 if StrictVersion(django_version) >= StrictVersion('1.9'):
@@ -32,10 +33,10 @@ def to_jalali(g_date, strftime=None):
 	if g_date is None:
 		return '-'
 	elif isinstance(g_date, datetime):
-		strftime = strftime if strftime else DEFAULTS['Strftime']['datetime']
+		strftime = normalize_strftime(strftime if strftime else DEFAULTS['Strftime']['datetime'])
 		return datetime2jalali(g_date).strftime(strftime)
 	elif isinstance(g_date, date):
-		strftime = strftime if strftime else DEFAULTS['Strftime']['date']
+		strftime = normalize_strftime(strftime if strftime else DEFAULTS['Strftime']['date'])
 		return date2jalali(g_date).strftime(strftime)
 	return '-'
 
@@ -55,10 +56,10 @@ def jalali_admin_safe_readonly(readonly_field, strftime=None):
 
 	field = getattr(instance, field_name)
 	if isinstance(field, datetime):
-		strftime = strftime if strftime else DEFAULTS['Strftime']['datetime']
+		strftime = normalize_strftime(strftime if strftime else DEFAULTS['Strftime']['datetime'])
 		return ObjectContents(datetime2jalali(field).strftime(strftime))
 	elif isinstance(field, date):
-		strftime = strftime if strftime else DEFAULTS['Strftime']['date']
+		strftime = normalize_strftime(strftime if strftime else DEFAULTS['Strftime']['date'])
 		return ObjectContents(date2jalali(field).strftime(strftime))
 	elif field is None:
 		return ObjectContents('-')
@@ -68,5 +69,5 @@ def jalali_admin_safe_readonly(readonly_field, strftime=None):
 
 @register.simple_tag
 def jalali_now(strftime=None):
-	strftime = strftime if strftime else DEFAULTS['Strftime']['datetime']
+	strftime = normalize_strftime(strftime if strftime else DEFAULTS['Strftime']['datetime'])
 	return datetime2jalali(datetime.now()).strftime(strftime)
